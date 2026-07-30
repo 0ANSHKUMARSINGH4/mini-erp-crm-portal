@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const customerController_js_1 = require("../controllers/customerController.js");
+const validate_js_1 = require("../middleware/validate.js");
+const auth_js_1 = require("../middleware/auth.js");
+const client_1 = require("@prisma/client");
+const router = (0, express_1.Router)();
+router.use(auth_js_1.authenticate);
+router.get('/', (0, auth_js_1.authorizeRoles)(client_1.Role.ADMIN, client_1.Role.SALES, client_1.Role.WAREHOUSE, client_1.Role.ACCOUNTS), customerController_js_1.getCustomers);
+router.get('/:id', (0, auth_js_1.authorizeRoles)(client_1.Role.ADMIN, client_1.Role.SALES, client_1.Role.WAREHOUSE, client_1.Role.ACCOUNTS), customerController_js_1.getCustomerById);
+router.post('/', (0, auth_js_1.authorizeRoles)(client_1.Role.ADMIN, client_1.Role.SALES), (0, validate_js_1.validate)(customerController_js_1.createCustomerSchema), customerController_js_1.createCustomer);
+router.put('/:id', (0, auth_js_1.authorizeRoles)(client_1.Role.ADMIN, client_1.Role.SALES), (0, validate_js_1.validate)(customerController_js_1.updateCustomerSchema), customerController_js_1.updateCustomer);
+router.post('/:id/follow-ups', (0, auth_js_1.authorizeRoles)(client_1.Role.ADMIN, client_1.Role.SALES), (0, validate_js_1.validate)(customerController_js_1.addFollowUpSchema), customerController_js_1.addFollowUp);
+exports.default = router;
